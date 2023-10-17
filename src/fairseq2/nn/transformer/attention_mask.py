@@ -73,7 +73,10 @@ class CausalAttentionMaskGenerator:
         if mask is None or mask.device != seqs.device or mask.size(0) < seq_len:
             mask = seqs.new_full([seq_len, seq_len], -torch.inf)
 
+            # mask.triu_(diagonal=1)
+            mask = mask.to(torch.float32)
             mask.triu_(diagonal=1)
+            mask = mask.to(seqs.dtype)
 
             self._cached_attn_mask = mask
 
